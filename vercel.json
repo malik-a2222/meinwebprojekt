@@ -1,8 +1,4 @@
 {
   "buildCommand": "",
-  "outputDirectory": ".",
-  "env": {
-    "BLOB_STORE_ID": "@blob_store_id",
-    "BLOB_WEBHOOK_PUBLIC_KEY": "@blob_webhook_public_key"
-  }
+  "outputDirectory": "."
 }
