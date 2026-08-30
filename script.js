@@ -232,7 +232,14 @@ document.querySelectorAll('.toggle-login').forEach(link => {
 // "Jetzt Starten" Button - öffnet auch das Login-Modal
 if (btnPrimary) {
     btnPrimary.addEventListener('click', () => {
-        loginModal.classList.add('active');
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        if (loggedInUser) {
+            // Bereits eingeloggt - zur Upload-Sektion springen
+            document.getElementById('upload').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            // Nicht eingeloggt - Login-Modal öffnen
+            loginModal.classList.add('active');
+        }
     });
 }
 
