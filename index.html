@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Code Hub - Programmierung & Web-Entwicklung</title>
+    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-code"></i> Digital Code Hub
+            </div>
+            <input type="checkbox" id="nav-toggle" class="nav-toggle">
+            <label for="nav-toggle" class="nav-toggle-label">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <nav class="nav-menu">
+                <ul>
+                    <li><a href="#home">Startseite</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#about">Über uns</a></li>
+                    <li><a href="#upload">Upload</a></li>
+                    <li><a href="#contact">Kontakt</a></li>
+                    <li><button class="btn-login" type="button">Login</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Willkommen bei Digital Code Hub</h1>
+            <p>Deine Plattform für moderne Web-Entwicklung und Programmierung</p>
+            <button class="btn-primary">Jetzt Starten</button>
+        </div>
+        <div class="hero-image">
+            <div class="code-box">
+                <span class="bracket">&lt;</span>
+                <span class="code-text">Code</span>
+                <span class="bracket">&gt;</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <h2>Unsere Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-laptop-code"></i>
+                <h3>Web Development</h3>
+                <p>Moderne und responsive Webseiten mit neuesten Technologien</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-database"></i>
+                <h3>Backend Solutions</h3>
+                <p>Robuste Server-Lösungen und Datenbank-Management</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Mobile Apps</h3>
+                <p>Native und Cross-Platform Mobile-Anwendungen</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <h2>Über Digital Code Hub</h2>
+        <p>Wir sind dein Partner für innovative Lösungen in der digitalen Welt. Mit jahrelanger Erfahrung in Web- und App-Entwicklung helfen wir Unternehmen, ihre digitalen Ziele zu erreichen.</p>
+    </section>
+
+    <section id="upload" class="upload-section">
+        <div class="upload-container">
+            <h2>📁 Datei-Upload</h2>
+            <p>Lade deine Dateien hochgeladen (nur für eingeloggte User)</p>
+            
+            <div class="upload-box" id="uploadBox">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Datei hier ziehen oder klicken zum Auswählen</p>
+                <input type="file" id="fileInput" style="display: none;">
+            </div>
+            
+            <div id="uploadStatus" class="upload-status"></div>
+            
+            <div id="filesList" class="files-list">
+                <h3>✅ Hochgeladene Dateien</h3>
+                <ul id="filesUL"></ul>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="footer">
+        <div class="footer-content">
+            <h3>Kontakt</h3>
+            <p>Email: contact@digitalcodehub.com</p>
+            <p>Tel: +49 123 456789</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+        <p class="footer-bottom">&copy; 2024 Digital Code Hub. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Login</h2>
+            <form>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Passwort</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Angemeldet bleiben</label>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
