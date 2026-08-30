@@ -165,6 +165,27 @@
         </div>
     </div>
 
+    <!-- Email Verification Modal -->
+    <div class="login-modal" id="verifyModal">
+        <div class="modal-content">
+            <h2>📧 E-Mail bestätigen</h2>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 1.5rem;">
+                Wir haben einen Bestätigungscode an deine E-Mail gesendet.<br>
+                <strong id="verifyEmail" style="color: var(--text-dark);"></strong>
+            </p>
+            <form id="verifyForm">
+                <div class="form-group">
+                    <label for="verifyCode">Bestätigungscode (6 Ziffern)</label>
+                    <input type="text" id="verifyCode" maxlength="6" placeholder="000000" required style="text-align: center; font-size: 1.5rem; letter-spacing: 5px; font-weight: bold;">
+                </div>
+                <button type="submit" class="btn-primary">Bestätigen</button>
+                <p style="text-align: center; margin-top: 1rem; color: #6b7280; font-size: 0.9rem;">
+                    Keinen Code erhalten? <a href="#" id="resendCode" style="color: #667eea; text-decoration: none; font-weight: 600;">Erneut senden</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

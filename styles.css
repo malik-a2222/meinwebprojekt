@@ -511,6 +511,16 @@ body {
     margin-bottom: 0;
 }
 
+/* ===== Verification Input ===== */
+#verifyCode {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 8px;
+}
+
+#verifyCode::placeholder {
+    letter-spacing: 2px;
+}
+
 /* ===== Mobile Responsive ===== */
 @media (max-width: 768px) {
     .nav-toggle-label {

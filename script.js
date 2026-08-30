@@ -148,15 +148,24 @@ const closeBtn = document.querySelector('.close-btn');
 const closeBtnRegister = document.querySelector('.close-btn-register');
 const loginModal = document.getElementById('loginModal');
 const registerModal = document.getElementById('registerModal');
+const verifyModal = document.getElementById('verifyModal');
 const btnPrimary = document.querySelector('.btn-primary');
 const loginForm = document.querySelector('#loginModal form');
 const registerForm = document.querySelector('#registerForm');
+const verifyForm = document.querySelector('#verifyForm');
 
 // Benutzer-Datenbank (lokal gespeichert)
 let users = JSON.parse(localStorage.getItem('users')) || [
-    { name: 'Demo User', email: 'demo@example.com', password: 'password123' },
-    { name: 'Test User', email: 'user@test.com', password: 'test123' }
+    { name: 'Demo User', email: 'demo@example.com', password: 'password123', verified: true },
+    { name: 'Test User', email: 'user@test.com', password: 'test123', verified: true }
 ];
+
+let pendingVerification = JSON.parse(localStorage.getItem('pendingVerification')) || {};
+
+// Verifikationscode generieren
+function generateVerificationCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
 
 // Prüfe ob Nutzer eingeloggt ist beim Laden
 document.addEventListener('DOMContentLoaded', () => {
@@ -170,12 +179,14 @@ document.addEventListener('DOMContentLoaded', () => {
 loginBtn.addEventListener('click', () => {
     loginModal.classList.add('active');
     registerModal.classList.remove('active');
+    verifyModal.classList.remove('active');
 });
 
 // Register-Button klicken
 registerBtn.addEventListener('click', () => {
     registerModal.classList.add('active');
     loginModal.classList.remove('active');
+    verifyModal.classList.remove('active');
 });
 
 // Close-Button Login klicken
@@ -195,6 +206,9 @@ window.addEventListener('click', (event) => {
     }
     if (event.target === registerModal) {
         registerModal.classList.remove('active');
+    }
+    if (event.target === verifyModal) {
+        // Verifymodal nicht schließen, wenn man draußen klickt
     }
 });
 
@@ -233,6 +247,10 @@ loginForm.addEventListener('submit', (e) => {
     const user = users.find(u => u.email === email && u.password === password);
     
     if (user) {
+        if (!user.verified) {
+            alert('❌ Bitte bestätige zuerst deine E-Mail!');
+            return;
+        }
         // Login erfolgreich
         localStorage.setItem('loggedInUser', user.name);
         alert('✅ Login erfolgreich! Willkommen ' + user.name);
@@ -240,7 +258,7 @@ loginForm.addEventListener('submit', (e) => {
         loginModal.classList.remove('active');
         updateUIForLoggedInUser(user.name);
     } else {
-        alert('❌ Ungültige Anmeldedaten!\n\nDemo-Accounts:\n📧 demo@example.com\n🔑 password123\n\noder\n📧 user@test.com\n🔑 test123');
+        alert('❌ Ungültige Anmeldedaten!');
     }
 });
 
@@ -270,15 +288,84 @@ registerForm.addEventListener('submit', (e) => {
         return;
     }
     
-    // Neuer Benutzer erstellen
-    const newUser = { name, email, password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
+    // Generiere Verifizierungscode
+    const verificationCode = generateVerificationCode();
     
-    alert('✅ Registrierung erfolgreich! Du kannst dich jetzt anmelden.');
-    registerForm.reset();
+    // Speichere Benutzer als "nicht verifiziert"
+    const newUser = { name, email, password, verified: false };
+    
+    // Speichere als ausstehend
+    pendingVerification[email] = {
+        user: newUser,
+        code: verificationCode,
+        attempts: 0
+    };
+    localStorage.setItem('pendingVerification', JSON.stringify(pendingVerification));
+    
+    // Zeige Verifikationsbildschirm
+    document.getElementById('verifyEmail').textContent = email;
+    document.getElementById('verifyCode').value = '';
+    
     registerModal.classList.remove('active');
-    loginModal.classList.add('active');
+    verifyModal.classList.add('active');
+    
+    // Zeige den Code in der Demo (in echter App würde das per Email gehen)
+    alert(`✅ Registrierung fast fertig!\n\n📧 Bestätigungscode für ${email}:\n\n🔐 ${verificationCode}\n\nBitte gib diesen Code im Fenster ein.`);
+});
+
+// Verification Form Submission
+verifyForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const verifyCode = document.getElementById('verifyCode').value;
+    const email = document.getElementById('verifyEmail').textContent;
+    
+    if (!pendingVerification[email]) {
+        alert('❌ Fehler: E-Mail nicht gefunden!');
+        return;
+    }
+    
+    const pending = pendingVerification[email];
+    
+    if (verifyCode === pending.code) {
+        // Code korrekt!
+        const newUser = pending.user;
+        newUser.verified = true;
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Lösche ausstehende Verifikation
+        delete pendingVerification[email];
+        localStorage.setItem('pendingVerification', JSON.stringify(pendingVerification));
+        
+        alert('✅ E-Mail bestätigt! Du kannst dich jetzt einloggen.');
+        verifyForm.reset();
+        verifyModal.classList.remove('active');
+        loginModal.classList.add('active');
+    } else {
+        pending.attempts++;
+        if (pending.attempts >= 3) {
+            alert('❌ Zu viele Versuche! Bitte registriere dich erneut.');
+            delete pendingVerification[email];
+            localStorage.setItem('pendingVerification', JSON.stringify(pendingVerification));
+            verifyModal.classList.remove('active');
+            registerModal.classList.add('active');
+        } else {
+            alert(`❌ Falscher Code! ${3 - pending.attempts} Versuche verbleibend.`);
+        }
+        localStorage.setItem('pendingVerification', JSON.stringify(pendingVerification));
+    }
+});
+
+// Resend Code
+document.getElementById('resendCode').addEventListener('click', (e) => {
+    e.preventDefault();
+    const email = document.getElementById('verifyEmail').textContent;
+    
+    if (pendingVerification[email]) {
+        const code = pendingVerification[email].code;
+        alert(`📧 Neuer Code für ${email}:\n\n🔐 ${code}`);
+    }
 });
 
 // UI aktualisieren wenn eingeloggt
