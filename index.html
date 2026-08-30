@@ -28,6 +28,7 @@
                     <li><a href="#upload">Upload</a></li>
                     <li><a href="#contact">Kontakt</a></li>
                     <li><button class="btn-login" type="button">Login</button></li>
+                    <li><button class="btn-register" type="button">Registrieren</button></li>
                 </ul>
             </nav>
         </div>
@@ -127,6 +128,39 @@
                     <label for="remember">Angemeldet bleiben</label>
                 </div>
                 <button type="submit" class="btn-primary">Login</button>
+                <p style="text-align: center; margin-top: 1rem; color: #6b7280;">
+                    Noch kein Konto? <a href="#" class="toggle-register" style="color: #667eea; text-decoration: none; font-weight: 600;">Hier registrieren</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="login-modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close-btn-register">&times;</span>
+            <h2>Registrieren</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regName">Name</label>
+                    <input type="text" id="regName" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Passwort</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPasswordConfirm">Passwort wiederholen</label>
+                    <input type="password" id="regPasswordConfirm" required>
+                </div>
+                <button type="submit" class="btn-primary">Registrieren</button>
+                <p style="text-align: center; margin-top: 1rem; color: #6b7280;">
+                    Schon ein Konto? <a href="#" class="toggle-login" style="color: #667eea; text-decoration: none; font-weight: 600;">Hier einloggen</a>
+                </p>
             </form>
         </div>
     </div>

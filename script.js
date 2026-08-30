@@ -140,17 +140,22 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-const loginBtn = document.querySelector('.btn-login');
-const closeBtn = document.querySelector('.close-btn');
-const loginModal = document.getElementById('loginModal');
-const btnPrimary = document.querySelector('.btn-primary');
-const loginForm = document.querySelector('.modal-content form');
-const navMenu = document.querySelector('.nav-menu');
 
-// Benutzer-Datenbank (nur Demo - in Realität würde Backend-DB verwendet)
-const users = [
-    { email: 'demo@example.com', password: 'password123' },
-    { email: 'user@test.com', password: 'test123' }
+// ===== Login & Registration System =====
+const loginBtn = document.querySelector('.btn-login');
+const registerBtn = document.querySelector('.btn-register');
+const closeBtn = document.querySelector('.close-btn');
+const closeBtnRegister = document.querySelector('.close-btn-register');
+const loginModal = document.getElementById('loginModal');
+const registerModal = document.getElementById('registerModal');
+const btnPrimary = document.querySelector('.btn-primary');
+const loginForm = document.querySelector('#loginModal form');
+const registerForm = document.querySelector('#registerForm');
+
+// Benutzer-Datenbank (lokal gespeichert)
+let users = JSON.parse(localStorage.getItem('users')) || [
+    { name: 'Demo User', email: 'demo@example.com', password: 'password123' },
+    { name: 'Test User', email: 'user@test.com', password: 'test123' }
 ];
 
 // Prüfe ob Nutzer eingeloggt ist beim Laden
@@ -164,11 +169,23 @@ document.addEventListener('DOMContentLoaded', () => {
 // Login-Button klicken
 loginBtn.addEventListener('click', () => {
     loginModal.classList.add('active');
+    registerModal.classList.remove('active');
 });
 
-// Close-Button klicken
+// Register-Button klicken
+registerBtn.addEventListener('click', () => {
+    registerModal.classList.add('active');
+    loginModal.classList.remove('active');
+});
+
+// Close-Button Login klicken
 closeBtn.addEventListener('click', () => {
     loginModal.classList.remove('active');
+});
+
+// Close-Button Register klicken
+closeBtnRegister.addEventListener('click', () => {
+    registerModal.classList.remove('active');
 });
 
 // Außerhalb des Modals klicken
@@ -176,6 +193,26 @@ window.addEventListener('click', (event) => {
     if (event.target === loginModal) {
         loginModal.classList.remove('active');
     }
+    if (event.target === registerModal) {
+        registerModal.classList.remove('active');
+    }
+});
+
+// Toggle Links zwischen Login und Registrierung
+document.querySelectorAll('.toggle-register').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        loginModal.classList.remove('active');
+        registerModal.classList.add('active');
+    });
+});
+
+document.querySelectorAll('.toggle-login').forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        registerModal.classList.remove('active');
+        loginModal.classList.add('active');
+    });
 });
 
 // "Jetzt Starten" Button - öffnet auch das Login-Modal
@@ -185,7 +222,7 @@ if (btnPrimary) {
     });
 }
 
-// Form Submission - Login verarbeiten
+// Login Form Submission
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
@@ -197,22 +234,62 @@ loginForm.addEventListener('submit', (e) => {
     
     if (user) {
         // Login erfolgreich
-        localStorage.setItem('loggedInUser', email);
-        alert('✅ Login erfolgreich! Willkommen ' + email);
+        localStorage.setItem('loggedInUser', user.name);
+        alert('✅ Login erfolgreich! Willkommen ' + user.name);
         loginForm.reset();
         loginModal.classList.remove('active');
-        updateUIForLoggedInUser(email);
+        updateUIForLoggedInUser(user.name);
     } else {
         alert('❌ Ungültige Anmeldedaten!\n\nDemo-Accounts:\n📧 demo@example.com\n🔑 password123\n\noder\n📧 user@test.com\n🔑 test123');
     }
 });
 
+// Registration Form Submission
+registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+    
+    // Validierung
+    if (password !== passwordConfirm) {
+        alert('❌ Passwörter stimmen nicht überein!');
+        return;
+    }
+    
+    if (password.length < 6) {
+        alert('❌ Passwort muss mindestens 6 Zeichen lang sein!');
+        return;
+    }
+    
+    // Prüfe ob Email bereits existiert
+    if (users.find(u => u.email === email)) {
+        alert('❌ Diese Email ist bereits registriert!');
+        return;
+    }
+    
+    // Neuer Benutzer erstellen
+    const newUser = { name, email, password };
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    alert('✅ Registrierung erfolgreich! Du kannst dich jetzt anmelden.');
+    registerForm.reset();
+    registerModal.classList.remove('active');
+    loginModal.classList.add('active');
+});
+
 // UI aktualisieren wenn eingeloggt
-function updateUIForLoggedInUser(email) {
+function updateUIForLoggedInUser(userName) {
     const loginBtn = document.querySelector('.btn-login');
-    loginBtn.textContent = '👤 ' + email;
+    const registerBtn = document.querySelector('.btn-register');
+    
+    loginBtn.textContent = '👤 ' + userName;
     loginBtn.style.background = '#10b981';
     loginBtn.style.color = 'white';
+    registerBtn.style.display = 'none';
     
     // Logout-Funktion hinzufügen
     loginBtn.onclick = () => {

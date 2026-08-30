@@ -90,6 +90,21 @@ body {
     transform: scale(1.05);
 }
 
+.btn-register {
+    background: #667eea;
+    color: white;
+    border: 2px solid white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.btn-register:hover {
+    transform: scale(1.05);
+}
+
 /* Mobile Menu Toggle */
 .nav-toggle {
     display: none;
