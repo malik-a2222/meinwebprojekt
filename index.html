@@ -26,6 +26,7 @@
                     <li><a href="#services">Services</a></li>
                     <li><a href="#about">Über uns</a></li>
                     <li><a href="#upload">Upload</a></li>
+                    <li><a href="#games">Spiele</a></li>
                     <li><a href="#contact">Kontakt</a></li>
                     <li><button class="btn-login" type="button">Login</button></li>
                     <li><button class="btn-register" type="button">Registrieren</button></li>
@@ -91,6 +92,60 @@
             <div id="filesList" class="files-list">
                 <h3>✅ Hochgeladene Dateien</h3>
                 <ul id="filesUL"></ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="games" class="games-section">
+        <div class="games-container">
+            <h2>🎮 Spiele</h2>
+            <div class="games-menu">
+                <button class="game-btn active" data-game="snake">🐍 Snake</button>
+                <button class="game-btn" data-game="2048">2048</button>
+                <button class="game-btn" data-game="tictactoe">❌ Tic-Tac-Toe</button>
+                <button class="game-btn" data-game="memory">🧠 Memory</button>
+                <button class="game-btn" data-game="quiz">❓ Quiz</button>
+            </div>
+
+            <!-- Snake Game -->
+            <div class="game-container active" id="snake-game">
+                <canvas id="snakeCanvas" width="400" height="400" style="border: 2px solid #0066cc; background: #f0f6ff;"></canvas>
+                <div class="game-info">
+                    <p>Score: <span id="snakeScore">0</span></p>
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Pfeiltasten zum Steuern</p>
+                </div>
+            </div>
+
+            <!-- 2048 Game -->
+            <div class="game-container" id="2048-game">
+                <div id="board2048" class="board-2048"></div>
+                <div class="game-info">
+                    <p>Score: <span id="score2048">0</span></p>
+                    <button id="restart2048" class="btn-primary" style="margin-top: 1rem;">Neu starten</button>
+                </div>
+            </div>
+
+            <!-- Tic-Tac-Toe Game -->
+            <div class="game-container" id="tictactoe-game">
+                <div id="tictactoeBoard" class="tictactoe-board"></div>
+                <div class="game-info">
+                    <p id="tictactoeStatus">Du bist X, Computer ist O</p>
+                    <button id="restartTicTacToe" class="btn-primary" style="margin-top: 1rem;">Neu starten</button>
+                </div>
+            </div>
+
+            <!-- Memory Game -->
+            <div class="game-container" id="memory-game">
+                <div id="memoryBoard" class="memory-board"></div>
+                <div class="game-info">
+                    <p>Paare gefunden: <span id="memoryMatches">0</span>/8</p>
+                    <button id="restartMemory" class="btn-primary" style="margin-top: 1rem;">Neu starten</button>
+                </div>
+            </div>
+
+            <!-- Quiz Game -->
+            <div class="game-container" id="quiz-game">
+                <div id="quizContent" class="quiz-content"></div>
             </div>
         </div>
     </section>
@@ -187,5 +242,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="games.js"></script>
 </body>
 </html>
