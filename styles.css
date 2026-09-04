@@ -251,6 +251,71 @@ body {
     background: #ffffff;
 }
 
+.site-lock-screen {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: #202a3a;
+    background-image: linear-gradient(135deg, #202a3a 0%, #175dcc 100%);
+}
+
+.site-lock-card {
+    width: min(440px, 100%);
+    padding: 42px 34px;
+    border: 4px solid #202a3a;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 12px 12px 0 #101722;
+    color: #202a3a;
+    text-align: center;
+}
+
+.site-lock-icon {
+    display: grid;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 22px;
+    place-items: center;
+    border: 3px solid #202a3a;
+    border-radius: 8px;
+    background: #ffd34e;
+    font-size: 2rem;
+}
+
+.site-lock-label {
+    color: #2f80ed;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+}
+
+.site-lock-card h1 {
+    margin: 10px 0 0;
+    font-size: clamp(2rem, 7vw, 3.2rem);
+    line-height: 1;
+}
+
+.site-lock-card p {
+    margin: 10px 0 24px;
+    color: #ff6b5b;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.site-lock-divider {
+    width: 56px;
+    height: 4px;
+    margin: 0 auto 22px;
+    background: #4fd1a5;
+}
+
+.site-lock-card strong {
+    font-size: 1.05rem;
+}
+
 .studio-section {
     padding: 6rem 20px;
     background: #f0f6ff;
