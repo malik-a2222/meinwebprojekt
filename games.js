@@ -1,3 +1,7 @@
+import * as THREE from './vendor/three.module.min.js';
+
+window.THREE = THREE;
+
 // ===== Games System =====
 // Game Tab Switching
 const gameButtons = document.querySelectorAll('.game-btn');
@@ -36,7 +40,179 @@ function initGameIfNeeded(gameId) {
     } else if (gameId === 'quiz' && !window.quizInitialized) {
         initQuiz();
         window.quizInitialized = true;
+    } else if (gameId === 'racer3d' && !window.racer3dInitialized) {
+        initRacer3d();
+        window.racer3dInitialized = true;
     }
+}
+
+// ===== 3D RACER =====
+function initRacer3d() {
+    const sceneElement = document.getElementById('racer3dScene');
+    const scoreDisplay = document.getElementById('racer3dScore');
+    const statusDisplay = document.getElementById('racer3dStatus');
+    const restartButton = document.getElementById('restartRacer3d');
+    const leftButton = document.getElementById('racer3dLeft');
+    const rightButton = document.getElementById('racer3dRight');
+
+    if (!sceneElement || !window.THREE) {
+        statusDisplay.textContent = 'Das 3D-Spiel konnte nicht geladen werden.';
+        return;
+    }
+
+    const THREE = window.THREE;
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x9ed9ff);
+    scene.fog = new THREE.Fog(0x9ed9ff, 35, 115);
+    const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 150);
+    camera.position.set(0, 5.8, 11);
+    camera.lookAt(0, 0.8, -18);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    sceneElement.appendChild(renderer.domElement);
+
+    scene.add(new THREE.HemisphereLight(0xe5f5ff, 0x34516b, 2.2));
+    const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+    sun.position.set(-8, 14, 8);
+    sun.castShadow = true;
+    scene.add(sun);
+
+    const road = new THREE.Mesh(
+        new THREE.PlaneGeometry(16, 160),
+        new THREE.MeshStandardMaterial({ color: 0x27364a, roughness: 0.92 })
+    );
+    road.rotation.x = -Math.PI / 2;
+    road.position.z = -28;
+    road.receiveShadow = true;
+    scene.add(road);
+
+    const shoulderMaterial = new THREE.MeshStandardMaterial({ color: 0x45a66f });
+    [-10, 10].forEach(x => {
+        const shoulder = new THREE.Mesh(new THREE.BoxGeometry(4, 0.15, 160), shoulderMaterial);
+        shoulder.position.set(x, -0.08, -28);
+        scene.add(shoulder);
+    });
+
+    const laneMarkers = [];
+    const markerMaterial = new THREE.MeshStandardMaterial({ color: 0xf6d365, emissive: 0x5b4310 });
+    [-2.1, 2.1].forEach(x => {
+        for (let z = -78; z < 22; z += 8) {
+            const marker = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 3.5), markerMaterial);
+            marker.position.set(x, 0.03, z);
+            scene.add(marker);
+            laneMarkers.push(marker);
+        }
+    });
+
+    const car = new THREE.Group();
+    const carBody = new THREE.Mesh(
+        new THREE.BoxGeometry(1.55, 0.42, 2.7),
+        new THREE.MeshStandardMaterial({ color: 0x0b75d1, metalness: 0.35, roughness: 0.3 })
+    );
+    carBody.position.y = 0.48;
+    carBody.castShadow = true;
+    car.add(carBody);
+    const cockpit = new THREE.Mesh(
+        new THREE.BoxGeometry(0.9, 0.36, 1.05),
+        new THREE.MeshStandardMaterial({ color: 0x152b45, metalness: 0.15, roughness: 0.2 })
+    );
+    cockpit.position.set(0, 0.82, 0.15);
+    cockpit.castShadow = true;
+    car.add(cockpit);
+    const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x10141b, roughness: 0.8 });
+    [[-0.83, 0.3, -0.8], [0.83, 0.3, -0.8], [-0.83, 0.3, 0.8], [0.83, 0.3, 0.8]].forEach(([x, y, z]) => {
+        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.16, 16), wheelMaterial);
+        wheel.rotation.z = Math.PI / 2;
+        wheel.position.set(x, y, z);
+        car.add(wheel);
+    });
+    car.position.set(0, 0, 7);
+    scene.add(car);
+
+    const lanes = [-4.2, 0, 4.2];
+    const obstacles = [];
+    const obstacleMaterial = new THREE.MeshStandardMaterial({ color: 0xef5b5b, roughness: 0.5 });
+    for (let index = 0; index < 4; index += 1) {
+        const obstacle = new THREE.Mesh(new THREE.BoxGeometry(1.65, 1.15, 1.65), obstacleMaterial);
+        obstacle.position.set(lanes[index % lanes.length], 0.58, -18 - index * 18);
+        obstacle.castShadow = true;
+        scene.add(obstacle);
+        obstacles.push(obstacle);
+    }
+
+    let lane = 1;
+    let score = 0;
+    let speed = 0.22;
+    let running = true;
+    let lastTime = performance.now();
+
+    function moveLane(direction) {
+        if (!running) return;
+        lane = Math.max(0, Math.min(lanes.length - 1, lane + direction));
+    }
+
+    function restart() {
+        lane = 1;
+        score = 0;
+        speed = 0.22;
+        running = true;
+        scoreDisplay.textContent = '0';
+        statusDisplay.textContent = 'A/D zum Spurwechsel';
+        obstacles.forEach((obstacle, index) => {
+            obstacle.position.set(lanes[index % lanes.length], 0.58, -18 - index * 18);
+        });
+    }
+
+    function resize() {
+        const width = sceneElement.clientWidth;
+        const height = sceneElement.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+    }
+
+    function animate(time) {
+        requestAnimationFrame(animate);
+        const delta = Math.min((time - lastTime) / 16.67, 2);
+        lastTime = time;
+        car.position.x += (lanes[lane] - car.position.x) * 0.12 * delta;
+        laneMarkers.forEach(marker => {
+            marker.position.z += speed * 2.8 * delta;
+            if (marker.position.z > 20) marker.position.z -= 104;
+        });
+        if (running) {
+            obstacles.forEach((obstacle, index) => {
+                obstacle.position.z += speed * delta;
+                obstacle.rotation.y += 0.01 * delta;
+                if (obstacle.position.z > 13) {
+                    obstacle.position.z = -55 - index * 9 - Math.random() * 12;
+                    obstacle.position.x = lanes[Math.floor(Math.random() * lanes.length)];
+                    score += 1;
+                    speed = Math.min(0.52, speed + 0.004);
+                    scoreDisplay.textContent = score;
+                }
+                if (Math.abs(obstacle.position.x - car.position.x) < 1.35 && Math.abs(obstacle.position.z - car.position.z) < 1.8) {
+                    running = false;
+                    statusDisplay.textContent = `Crash! Score: ${score}. Drücke Neu starten.`;
+                }
+            });
+        }
+        renderer.render(scene, camera);
+    }
+
+    document.addEventListener('keydown', event => {
+        if (event.key.toLowerCase() === 'a') moveLane(-1);
+        if (event.key.toLowerCase() === 'd') moveLane(1);
+    });
+    leftButton.addEventListener('click', () => moveLane(-1));
+    rightButton.addEventListener('click', () => moveLane(1));
+    restartButton.addEventListener('click', restart);
+    window.addEventListener('resize', resize);
+    resize();
+    restart();
+    requestAnimationFrame(animate);
 }
 
 // ===== SNAKE GAME =====

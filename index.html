@@ -56,6 +56,7 @@
                 <button class="game-btn" data-game="tictactoe">❌ Tic-Tac-Toe</button>
                 <button class="game-btn" data-game="memory">🧠 Memory</button>
                 <button class="game-btn" data-game="quiz">❓ Quiz</button>
+                <button class="game-btn" data-game="racer3d">🏎️ 3D Racer</button>
             </div>
 
             <!-- Snake Game -->
@@ -97,6 +98,21 @@
             <!-- Quiz Game -->
             <div class="game-container" id="quiz-game">
                 <div id="quizContent" class="quiz-content"></div>
+            </div>
+
+            <!-- 3D Racer -->
+            <div class="game-container" id="racer3d-game">
+                <div id="racer3dScene" class="racer3d-scene" aria-label="3D-Rennspiel"></div>
+                <div class="racer3d-toolbar">
+                    <p>Wechsle die Spur mit <strong>A</strong> und <strong>D</strong>.</p>
+                    <p>Score: <span id="racer3dScore">0</span></p>
+                    <button id="restartRacer3d" class="btn-primary" type="button">Neu starten</button>
+                </div>
+                <div class="racer3d-controls">
+                    <button id="racer3dLeft" type="button" aria-label="Nach links">A</button>
+                    <button id="racer3dRight" type="button" aria-label="Nach rechts">D</button>
+                </div>
+                <p id="racer3dStatus" class="racer3d-status">Bereit?</p>
             </div>
         </div>
     </section>
@@ -193,6 +209,6 @@
     </div>
 
     <script src="script.js"></script>
-    <script src="games.js"></script>
+    <script type="module" src="games.js"></script>
 </body>
 </html>
