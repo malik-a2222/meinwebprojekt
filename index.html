@@ -23,7 +23,10 @@
             <nav class="nav-menu">
                 <ul>
                     <li><a href="#home">Startseite</a></li>
+                    <li><a href="#discover">Entdecken</a></li>
+                    <li><a href="#play">Spielen</a></li>
                     <li><a href="#studio">Studio</a></li>
+                    <li><a href="#profile">Profil</a></li>
                     <li><a href="#contact">Kontakt</a></li>
                     <li><button class="btn-login" type="button">Login</button></li>
                     <li><button class="btn-register" type="button">Registrieren</button></li>
@@ -33,19 +36,49 @@
     </header>
 
     <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Baue deine digitale Welt.</h1>
-            <p>Eine kreative Plattform für moderne Web-Entwicklung und digitale Projekte.</p>
-            <button class="btn-primary">Jetzt starten</button>
-        </div>
-        <div class="hero-image">
-            <div class="code-box">
-                <span class="bracket">&lt;</span>
-                <span class="code-text">Code</span>
-                <span class="bracket">&gt;</span>
+        <aside class="platform-sidebar">
+            <div class="sidebar-label">DEINE WELT</div>
+            <a class="sidebar-link active" href="#home"><i class="fas fa-house"></i> Startseite</a>
+            <a class="sidebar-link" href="#discover"><i class="fas fa-compass"></i> Entdecken</a>
+            <a class="sidebar-link" href="#play"><i class="fas fa-gamepad"></i> Spielen</a>
+            <a class="sidebar-link" href="#studio"><i class="fas fa-hammer"></i> Erstellen</a>
+            <a class="sidebar-link" href="#profile"><i class="fas fa-user"></i> Profil</a>
+            <div class="sidebar-label community-label">COMMUNITY</div>
+            <a class="sidebar-link" href="#friends"><i class="fas fa-users"></i> Freunde</a>
+            <a class="sidebar-link" href="#servers"><i class="fas fa-globe"></i> Server</a>
+        </aside>
+        <div class="platform-main">
+            <div class="platform-welcome">
+                <div>
+                    <span class="platform-kicker">WILLKOMMEN ZURÜCK</span>
+                    <h1>Was möchtest du heute bauen?</h1>
+                    <p>Entdecke neue Welten oder starte dein eigenes Obby.</p>
+                </div>
+                <div class="avatar avatar-large" aria-label="Dein Avatar"><span></span></div>
+            </div>
+            <div class="quick-actions">
+                <a class="quick-action yellow" href="#discover"><i class="fas fa-compass"></i><strong>Entdecken</strong><small>Neue Welten finden</small></a>
+                <a class="quick-action blue" href="#studio"><i class="fas fa-hammer"></i><strong>Erstellen</strong><small>Eigenes Obby bauen</small></a>
+                <a class="quick-action mint" href="#profile"><i class="fas fa-user"></i><strong>Profil</strong><small>Deinen Avatar ansehen</small></a>
             </div>
         </div>
     </section>
+
+    <section id="discover" class="platform-section">
+        <div class="section-heading"><div><span class="platform-kicker">ENTDECKEN</span><h2>Beliebte Welten</h2></div><a href="#play" class="text-link">Alle ansehen <i class="fas fa-arrow-right"></i></a></div>
+        <div id="play" class="world-grid">
+            <article class="world-card world-sky"><div class="world-art"><i class="fas fa-cloud"></i><span>✦</span></div><div class="world-info"><h3>Sky Jump</h3><p>Springe über den Himmel</p><div><span class="online-dot"></span> 128 spielen</div></div><button class="world-play" type="button" aria-label="Sky Jump spielen"><i class="fas fa-play"></i></button></article>
+            <article class="world-card world-sunset"><div class="world-art"><i class="fas fa-mountain"></i><span>★</span></div><div class="world-info"><h3>Block Valley</h3><p>Baue deine Landschaft</p><div><span class="online-dot"></span> 84 spielen</div></div><button class="world-play" type="button" aria-label="Block Valley spielen"><i class="fas fa-play"></i></button></article>
+            <article class="world-card world-mint"><div class="world-art"><i class="fas fa-cube"></i><span>◆</span></div><div class="world-info"><h3>Neon Obby</h3><p>Schaffst du das Ziel?</p><div><span class="online-dot"></span> 52 spielen</div></div><button class="world-play" type="button" aria-label="Neon Obby spielen"><i class="fas fa-play"></i></button></article>
+        </div>
+    </section>
+
+    <section class="community-grid">
+        <div id="friends" class="community-panel"><div class="section-heading"><h2>Freunde</h2><a href="#profile" class="text-link">Alle <i class="fas fa-arrow-right"></i></a></div><div class="friend-row"><div class="avatar avatar-small coral"><span></span></div><div><strong>PixelMax</strong><small><span class="online-dot"></span> Online</small></div><button class="icon-button" type="button" aria-label="PixelMax beitreten"><i class="fas fa-user-plus"></i></button></div><div class="friend-row"><div class="avatar avatar-small mint"><span></span></div><div><strong>NovaBuilds</strong><small><span class="online-dot"></span> In Sky Jump</small></div><button class="icon-button" type="button" aria-label="NovaBuilds beitreten"><i class="fas fa-user-plus"></i></button></div></div>
+        <div id="servers" class="community-panel"><div class="section-heading"><h2>Aktive Server</h2><a href="#play" class="text-link">Mehr <i class="fas fa-arrow-right"></i></a></div><div class="server-row"><span class="server-signal"></span><div><strong>Sky Jump #04</strong><small>32 / 40 Spieler</small></div><button class="join-button" type="button">Beitreten</button></div><div class="server-row"><span class="server-signal"></span><div><strong>Neon Obby #12</strong><small>18 / 24 Spieler</small></div><button class="join-button" type="button">Beitreten</button></div></div>
+    </section>
+
+    <section id="profile" class="profile-section"><div class="profile-card"><div class="avatar avatar-profile"><span></span></div><div><span class="platform-kicker">DEIN PROFIL</span><h2>BlockBuilder</h2><p>Level 12 · Seit heute dabei</p></div><div class="profile-stats"><strong>8</strong><span>Welten</span><strong>24</strong><span>Freunde</span><strong>156</strong><span>Punkte</span></div><button class="btn-primary" type="button">Profil bearbeiten</button></div></section>
 
     <section id="studio" class="studio-section">
         <div class="studio-container">
