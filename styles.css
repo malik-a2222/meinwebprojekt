@@ -316,9 +316,34 @@ body {
     font-size: 1.05rem;
 }
 
+.site-unlock-form {
+    display: grid;
+    gap: 8px;
+    margin-top: 28px;
+    text-align: left;
+}
+
+.site-unlock-form label {
+    color: #202a3a;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.site-unlock-form input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #202a3a;
+    border-radius: 6px;
+    outline: none;
+}
+
+.site-unlock-form input:focus {
+    border-color: #2f80ed;
+}
+
 .site-unlock-button {
     display: block;
-    margin: 28px auto 0;
+    margin: 5px auto 0;
     padding: 10px 16px;
     border: 2px solid #202a3a;
     border-radius: 7px;
@@ -330,6 +355,15 @@ body {
 
 .site-unlock-button:hover {
     background: #175dcc;
+}
+
+.site-unlock-error {
+    min-height: 1.25rem;
+    margin: 0;
+    color: #c53030;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-align: center;
 }
 
 .studio-section {

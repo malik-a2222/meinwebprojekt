@@ -17,7 +17,12 @@
             <p>by Malik</p>
             <div class="site-lock-divider"></div>
             <strong>Komm später wieder.</strong>
-            <button id="unlockSite" class="site-unlock-button" type="button">Malik: Sperre aufheben</button>
+            <form id="unlockForm" class="site-unlock-form">
+                <label for="unlockPassword">Besitzer-Passwort</label>
+                <input id="unlockPassword" type="password" placeholder="Passwort eingeben" required>
+                <button id="unlockSite" class="site-unlock-button" type="submit">Sperre aufheben</button>
+                <p id="unlockError" class="site-unlock-error" role="alert"></p>
+            </form>
         </div>
     </div>
     <header class="navbar">

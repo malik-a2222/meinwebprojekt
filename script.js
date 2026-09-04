@@ -1,13 +1,22 @@
 const siteLockScreen = document.querySelector('.site-lock-screen');
-const unlockSiteButton = document.getElementById('unlockSite');
+const unlockForm = document.getElementById('unlockForm');
+const unlockError = document.getElementById('unlockError');
+const ownerPassword = 'Malik123';
 
-if (localStorage.getItem('blockforgeUnlocked') === 'true') {
+if (localStorage.getItem('blockforgeUnlockedV2') === 'true') {
     siteLockScreen?.remove();
 }
 
-unlockSiteButton?.addEventListener('click', () => {
-    localStorage.setItem('blockforgeUnlocked', 'true');
-    siteLockScreen?.remove();
+unlockForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    const password = document.getElementById('unlockPassword').value;
+    if (password === ownerPassword) {
+        localStorage.setItem('blockforgeUnlockedV2', 'true');
+        siteLockScreen?.remove();
+        return;
+    }
+    unlockError.textContent = 'Falsches Passwort.';
+    document.getElementById('unlockPassword').value = '';
 });
 
 // ===== Login & Registration System =====
