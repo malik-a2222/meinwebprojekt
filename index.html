@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Code Hub - Programmierung & Web-Entwicklung</title>
+    <title>BlockForge - Deine Spielwelt</title>
     <link rel="stylesheet" href="styles.css?v=3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,7 @@
     <header class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <i class="fas fa-code"></i> Digital Code Hub
+                <i class="fas fa-cubes"></i> BlockForge
             </div>
             <input type="checkbox" id="nav-toggle" class="nav-toggle">
             <label for="nav-toggle" class="nav-toggle-label">
@@ -23,7 +23,6 @@
             <nav class="nav-menu">
                 <ul>
                     <li><a href="#home">Startseite</a></li>
-                    <li><a href="#games">Spiele</a></li>
                     <li><a href="#contact">Kontakt</a></li>
                     <li><button class="btn-login" type="button">Login</button></li>
                     <li><button class="btn-register" type="button">Registrieren</button></li>
@@ -34,85 +33,15 @@
 
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>Willkommen bei Digital Code Hub</h1>
-            <p>Deine Plattform für moderne Web-Entwicklung und Programmierung</p>
-            <button class="btn-primary">Jetzt Starten</button>
+            <h1>Baue deine digitale Welt.</h1>
+            <p>Eine kreative Plattform für moderne Web-Entwicklung und digitale Projekte.</p>
+            <button class="btn-primary">Jetzt starten</button>
         </div>
         <div class="hero-image">
             <div class="code-box">
                 <span class="bracket">&lt;</span>
                 <span class="code-text">Code</span>
                 <span class="bracket">&gt;</span>
-            </div>
-        </div>
-    </section>
-
-    <section id="games" class="games-section">
-        <div class="games-container">
-            <h2>🎮 Spiele</h2>
-            <div class="games-menu">
-                <button class="game-btn active" data-game="snake">🐍 Snake</button>
-                <button class="game-btn" data-game="2048">2048</button>
-                <button class="game-btn" data-game="tictactoe">❌ Tic-Tac-Toe</button>
-                <button class="game-btn" data-game="memory">🧠 Memory</button>
-                <button class="game-btn" data-game="quiz">❓ Quiz</button>
-                <button class="game-btn" data-game="racer3d">🏎️ 3D Racer</button>
-            </div>
-
-            <!-- Snake Game -->
-            <div class="game-container active" id="snake-game">
-                <canvas id="snakeCanvas" width="400" height="400" style="border: 2px solid #0066cc; background: #f0f6ff;"></canvas>
-                <div class="game-info">
-                    <p>Score: <span id="snakeScore">0</span></p>
-                    <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">Pfeiltasten zum Steuern</p>
-                </div>
-            </div>
-
-            <!-- 2048 Game -->
-            <div class="game-container" id="2048-game">
-                <div id="board2048" class="board-2048"></div>
-                <div class="game-info">
-                    <p>Score: <span id="score2048">0</span></p>
-                    <button id="restart2048" class="btn-primary" style="margin-top: 1rem;">Neu starten</button>
-                </div>
-            </div>
-
-            <!-- Tic-Tac-Toe Game -->
-            <div class="game-container" id="tictactoe-game">
-                <div id="tictactoeBoard" class="tictactoe-board"></div>
-                <div class="game-info">
-                    <p id="tictactoeStatus">Du bist X, Computer ist O</p>
-                    <button id="restartTicTacToe" class="btn-primary" style="margin-top: 1rem;">Neu starten</button>
-                </div>
-            </div>
-
-            <!-- Memory Game -->
-            <div class="game-container" id="memory-game">
-                <div id="memoryBoard" class="memory-board"></div>
-                <div class="game-info">
-                    <p>Paare gefunden: <span id="memoryMatches">0</span>/8</p>
-                    <button id="restartMemory" class="btn-primary" style="margin-top: 1rem;">Neu starten</button>
-                </div>
-            </div>
-
-            <!-- Quiz Game -->
-            <div class="game-container" id="quiz-game">
-                <div id="quizContent" class="quiz-content"></div>
-            </div>
-
-            <!-- 3D Racer -->
-            <div class="game-container" id="racer3d-game">
-                <div id="racer3dScene" class="racer3d-scene" aria-label="3D-Rennspiel"></div>
-                <div class="racer3d-toolbar">
-                    <p>Wechsle die Spur mit <strong>A</strong> und <strong>D</strong>.</p>
-                    <p>Score: <span id="racer3dScore">0</span></p>
-                    <button id="restartRacer3d" class="btn-primary" type="button">Neu starten</button>
-                </div>
-                <div class="racer3d-controls">
-                    <button id="racer3dLeft" type="button" aria-label="Nach links">A</button>
-                    <button id="racer3dRight" type="button" aria-label="Nach rechts">D</button>
-                </div>
-                <p id="racer3dStatus" class="racer3d-status">Bereit?</p>
             </div>
         </div>
     </section>
@@ -209,6 +138,5 @@
     </div>
 
     <script src="script.js"></script>
-    <script type="module" src="games.js"></script>
 </body>
 </html>

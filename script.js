@@ -91,8 +91,7 @@ if (btnPrimary) {
     btnPrimary.addEventListener('click', () => {
         const loggedInUser = localStorage.getItem('loggedInUser');
         if (loggedInUser) {
-            // Bereits eingeloggt - zur Upload-Sektion springen
-            document.getElementById('upload').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         } else {
             // Nicht eingeloggt - Login-Modal öffnen
             loginModal.classList.add('active');
