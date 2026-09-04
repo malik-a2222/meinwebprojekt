@@ -1,22 +1,41 @@
 const siteLockScreen = document.querySelector('.site-lock-screen');
 const unlockForm = document.getElementById('unlockForm');
 const unlockError = document.getElementById('unlockError');
-const ownerPassword = 'malikmilan';
+const unlockPasswordInput = document.getElementById('unlockPassword');
 
-if (localStorage.getItem('blockforgeUnlockedV3') === 'true') {
+function removeSiteLock() {
     siteLockScreen?.remove();
+    document.body.classList.remove('site-is-locked');
 }
 
-unlockForm?.addEventListener('submit', event => {
+async function refreshSiteLock() {
+    try {
+        const response = await fetch('/api/site-lock', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Status unavailable');
+        const data = await response.json();
+        if (data.unlocked) removeSiteLock();
+    } catch (error) {
+        if (siteLockScreen) unlockError && (unlockError.textContent = 'Server nicht erreichbar. Bitte später erneut versuchen.');
+    }
+}
+
+refreshSiteLock();
+window.setInterval(refreshSiteLock, 10000);
+
+unlockForm?.addEventListener('submit', async event => {
     event.preventDefault();
-    const password = document.getElementById('unlockPassword').value;
-    if (password === ownerPassword) {
-        localStorage.setItem('blockforgeUnlockedV3', 'true');
-        siteLockScreen?.remove();
+    unlockError.textContent = 'Prüfe Passwort...';
+    const response = await fetch('/api/site-lock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: unlockPasswordInput.value })
+    });
+    if (response.ok) {
+        removeSiteLock();
         return;
     }
-    unlockError.textContent = 'Falsches Passwort.';
-    document.getElementById('unlockPassword').value = '';
+    unlockError.textContent = response.status === 401 ? 'Falsches Passwort.' : 'Freischaltung momentan nicht möglich.';
+    unlockPasswordInput.value = '';
 });
 
 // ===== Login & Registration System =====
