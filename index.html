@@ -23,6 +23,7 @@
             <nav class="nav-menu">
                 <ul>
                     <li><a href="#home">Startseite</a></li>
+                    <li><a href="#studio">Studio</a></li>
                     <li><a href="#contact">Kontakt</a></li>
                     <li><button class="btn-login" type="button">Login</button></li>
                     <li><button class="btn-register" type="button">Registrieren</button></li>
@@ -42,6 +43,32 @@
                 <span class="bracket">&lt;</span>
                 <span class="code-text">Code</span>
                 <span class="bracket">&gt;</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="studio" class="studio-section">
+        <div class="studio-container">
+            <div class="studio-heading">
+                <span class="studio-kicker">BLOCKFORGE STUDIO</span>
+                <h2>Erstelle dein eigenes Obby.</h2>
+                <p>Setze Hindernisse auf das Raster und teste deinen Parcours direkt im Browser.</p>
+            </div>
+            <div class="studio-layout">
+                <aside class="studio-panel">
+                    <h3>Bauteile</h3>
+                    <button class="builder-tool active" data-block="platform" type="button">Plattform</button>
+                    <button class="builder-tool" data-block="hazard" type="button">Gefahr</button>
+                    <button class="builder-tool" data-block="finish" type="button">Ziel</button>
+                    <button id="clearObby" class="builder-action" type="button">Raster leeren</button>
+                    <button id="saveObby" class="builder-action primary" type="button">Obby speichern</button>
+                    <button id="playObby" class="builder-action play" type="button">Test starten</button>
+                    <p id="builderStatus" class="builder-status">Bauteil auswählen und Raster anklicken.</p>
+                </aside>
+                <div class="obby-stage-wrap">
+                    <div id="obbyStage" class="obby-stage" aria-label="Obby-Baukasten"></div>
+                    <div class="obby-help">Editor: Raster anklicken · Test: A/D oder Pfeile · Springen: Leertaste</div>
+                </div>
             </div>
         </div>
     </section>
@@ -138,5 +165,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="builder.js"></script>
 </body>
 </html>
