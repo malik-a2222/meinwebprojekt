@@ -120,6 +120,20 @@
         <p class="footer-bottom">&copy; 2024 Digital Code Hub. Alle Rechte vorbehalten.</p>
     </footer>
 
+    <!-- Playable World Modal -->
+    <div class="world-modal" id="worldModal">
+        <div class="world-modal-content">
+            <button class="world-modal-close" id="closeWorldModal" type="button" aria-label="Spiel schließen">&times;</button>
+            <div class="world-modal-heading">
+                <span class="platform-kicker">JETZT SPIELEN</span>
+                <h2 id="worldModalTitle">Sky Jump</h2>
+                <p id="worldModalHelp">A/D oder Pfeile bewegen · Leertaste springen</p>
+            </div>
+            <canvas id="worldCanvas" width="720" height="420" aria-label="Spielwelt"></canvas>
+            <div class="world-modal-footer"><strong>Score: <span id="worldScore">0</span></strong><span id="worldStatus">Erreiche das goldene Ziel.</span><button id="restartWorld" class="btn-primary" type="button">Neu starten</button></div>
+        </div>
+    </div>
+
     <!-- Login Modal -->
     <div class="login-modal" id="loginModal">
         <div class="modal-content">
@@ -199,5 +213,6 @@
 
     <script src="script.js"></script>
     <script src="builder.js"></script>
+    <script src="worlds.js"></script>
 </body>
 </html>
