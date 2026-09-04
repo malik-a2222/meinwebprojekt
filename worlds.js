@@ -1,5 +1,7 @@
+import * as THREE from './vendor/three.module.min.js';
+
 const worldModal = document.getElementById('worldModal');
-const worldCanvas = document.getElementById('worldCanvas');
+const sceneElement = document.getElementById('worldCanvas');
 const worldTitle = document.getElementById('worldModalTitle');
 const worldHelp = document.getElementById('worldModalHelp');
 const worldScore = document.getElementById('worldScore');
@@ -8,49 +10,91 @@ const closeWorldModal = document.getElementById('closeWorldModal');
 const restartWorld = document.getElementById('restartWorld');
 const worldButtons = document.querySelectorAll('.world-play, .join-button');
 
-if (worldModal && worldCanvas) {
-    const context = worldCanvas.getContext('2d');
+if (worldModal && sceneElement) {
+    const keys = {};
+    const lanes = [-4, 0, 4];
+    const obstacles = [];
+    let renderer;
     let animationFrame;
     let running = false;
-    let levelName = 'Sky Jump';
     let score = 0;
+    let lastTime = 0;
     let player;
-    let platforms;
-    let hazards;
     let finish;
-    const keys = {};
 
-    function createLevel() {
-        platforms = [
-            { x: 0, y: 370, width: 180, height: 50 },
-            { x: 230, y: 320, width: 130, height: 22 },
-            { x: 415, y: 260, width: 125, height: 22 },
-            { x: 590, y: 205, width: 130, height: 22 },
-            { x: 335, y: 165, width: 95, height: 22 }
-        ];
-        hazards = [
-            { x: 180, y: 398, width: 50, height: 22 },
-            { x: 360, y: 398, width: 55, height: 22 },
-            { x: 540, y: 398, width: 50, height: 22 }
-        ];
-        finish = { x: 650, y: 145, width: 35, height: 60 };
-        player = { x: 45, y: 320, width: 26, height: 36, velocityY: 0, grounded: false };
+    function createBox(scene, size, color, position) {
+        const mesh = new THREE.Mesh(
+            new THREE.BoxGeometry(size.x, size.y, size.z),
+            new THREE.MeshStandardMaterial({ color, roughness: 0.75 })
+        );
+        mesh.position.set(position.x, position.y, position.z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        scene.add(mesh);
+        return mesh;
+    }
+
+    function initScene() {
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xbfe7ff);
+        scene.fog = new THREE.Fog(0xbfe7ff, 35, 105);
+        const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 150);
+        camera.position.set(0, 7, 13);
+        camera.lookAt(0, 2, -18);
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        sceneElement.innerHTML = '';
+        sceneElement.appendChild(renderer.domElement);
+        scene.add(new THREE.HemisphereLight(0xeaf8ff, 0x35556d, 2.2));
+        const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+        sun.position.set(-8, 14, 8);
+        sun.castShadow = true;
+        scene.add(sun);
+        createBox(scene, { x: 24, y: 0.4, z: 110 }, 0x72c58b, { x: 0, y: -0.35, z: -35 });
+        createBox(scene, { x: 14, y: 0.2, z: 110 }, 0x29384a, { x: 0, y: -0.1, z: -35 });
+        [-2, 2].forEach(x => {
+            for (let z = -82; z < 18; z += 8) createBox(scene, { x: 0.15, y: 0.04, z: 3.5 }, 0xffd34e, { x, y: 0.02, z });
+        });
+        player = createBox(scene, { x: 1.35, y: 1.8, z: 1.35 }, 0x2f80ed, { x: 0, y: 0.9, z: 7 });
+        createBox(scene, { x: 0.82, y: 0.45, z: 0.9 }, 0xf3b183, { x: 0, y: 2.05, z: 7 });
+        finish = createBox(scene, { x: 2.8, y: 0.25, z: 2.8 }, 0xffd34e, { x: 0, y: 0.2, z: -78 });
+        for (let index = 0; index < 8; index += 1) {
+            const obstacle = createBox(scene, { x: 1.7, y: 1.7, z: 1.7 }, 0xef5b5b, { x: lanes[index % 3], y: 0.85, z: -8 - index * 9 });
+            obstacles.push(obstacle);
+        }
+        return { scene, camera };
+    }
+
+    let game = initScene();
+
+    function resize() {
+        const width = sceneElement.clientWidth;
+        const height = sceneElement.clientHeight;
+        game.camera.aspect = width / height;
+        game.camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
     }
 
     function resetGame() {
         cancelAnimationFrame(animationFrame);
-        createLevel();
+        game = initScene();
+        obstacles.length = 0;
+        game.scene.traverse(object => {
+            if (object.isMesh && object !== player && object !== finish && object.geometry?.parameters?.width === 1.7) obstacles.push(object);
+        });
         score = 0;
         running = true;
         worldScore.textContent = '0';
         worldStatus.textContent = 'Erreiche das goldene Ziel.';
-        animationFrame = requestAnimationFrame(gameLoop);
+        resize();
+        lastTime = performance.now();
+        animationFrame = requestAnimationFrame(animate);
     }
 
     function openWorld(name) {
-        levelName = name || 'Sky Jump';
-        worldTitle.textContent = levelName;
-        worldHelp.textContent = 'A/D oder Pfeile bewegen · Leertaste springen';
+        worldTitle.textContent = name || 'Sky Jump';
+        worldHelp.textContent = 'W/A/S/D bewegen · Leertaste springen';
         worldModal.classList.add('active');
         document.body.style.overflow = 'hidden';
         resetGame();
@@ -63,100 +107,61 @@ if (worldModal && worldCanvas) {
         document.body.style.overflow = '';
     }
 
-    function overlaps(first, second) {
-        return first.x < second.x + second.width && first.x + first.width > second.x && first.y < second.y + second.height && first.y + first.height > second.y;
+    function endGame(message) {
+        running = false;
+        worldStatus.textContent = message;
     }
 
-    function movePlayer() {
-        const direction = (keys.a || keys.arrowleft ? -1 : 0) + (keys.d || keys.arrowright ? 1 : 0);
-        player.x = Math.max(0, Math.min(worldCanvas.width - player.width, player.x + direction * 4));
-        if ((keys[' '] || keys.w || keys.arrowup) && player.grounded) {
-            player.velocityY = -11;
-            player.grounded = false;
+    function animate(time) {
+        animationFrame = requestAnimationFrame(animate);
+        const delta = Math.min((time - lastTime) / 16.67, 2);
+        lastTime = time;
+        if (running) {
+            const horizontal = (keys.d ? 1 : 0) - (keys.a ? 1 : 0);
+            const depth = (keys.s ? 1 : 0) - (keys.w ? 1 : 0);
+            player.position.x = Math.max(-5, Math.min(5, player.position.x + horizontal * 0.16 * delta));
+            player.position.z = Math.max(-82, Math.min(9, player.position.z + depth * 0.16 * delta));
+            if (keys[' '] && player.position.y <= 0.91) player.userData.jump = 0.35;
+            player.userData.jump = (player.userData.jump || 0) - 0.018 * delta;
+            player.position.y = Math.max(0.9, player.position.y + player.userData.jump * delta);
+            obstacles.forEach(obstacle => {
+                obstacle.position.z += 0.22 * delta;
+                obstacle.rotation.y += 0.01 * delta;
+                if (obstacle.position.z > 12) {
+                    obstacle.position.z = -82 - Math.random() * 20;
+                    obstacle.position.x = lanes[Math.floor(Math.random() * lanes.length)];
+                    score += 1;
+                    worldScore.textContent = score;
+                }
+                if (Math.abs(obstacle.position.x - player.position.x) < 1.4 && Math.abs(obstacle.position.z - player.position.z) < 1.5 && Math.abs(obstacle.position.y - player.position.y) < 1.6) endGame(`Crash! Score: ${score}. Drücke Neu starten.`);
+            });
+            if (Math.abs(finish.position.x - player.position.x) < 2.2 && Math.abs(finish.position.z - player.position.z) < 2.2) endGame(`Ziel erreicht! Score: ${score + 100}.`);
         }
-        player.velocityY += 0.55;
-        player.y += player.velocityY;
-        player.grounded = false;
-        platforms.forEach(platform => {
-            const falling = player.velocityY >= 0;
-            const landed = player.y + player.height >= platform.y && player.y + player.height <= platform.y + platform.height + 10;
-            const horizontal = player.x + player.width > platform.x && player.x < platform.x + platform.width;
-            if (falling && landed && horizontal) {
-                player.y = platform.y - player.height;
-                player.velocityY = 0;
-                player.grounded = true;
-            }
-        });
-        if (player.y > worldCanvas.height + 30) loseGame();
-        hazards.forEach(hazard => {
-            if (overlaps(player, hazard)) loseGame();
-        });
-        if (overlaps(player, finish)) winGame();
-    }
-
-    function loseGame() {
-        if (!running) return;
-        running = false;
-        worldStatus.textContent = 'Autsch! Drücke „Neu starten“ und versuche es erneut.';
-    }
-
-    function winGame() {
-        if (!running) return;
-        running = false;
-        score += 100;
-        worldScore.textContent = score;
-        worldStatus.textContent = 'Ziel erreicht! Du hast die Welt geschafft.';
-    }
-
-    function draw() {
-        context.clearRect(0, 0, worldCanvas.width, worldCanvas.height);
-        context.fillStyle = '#bfe7ff';
-        context.fillRect(0, 0, worldCanvas.width, worldCanvas.height);
-        context.fillStyle = '#ffffff';
-        [[80, 70, 100, 20], [290, 90, 130, 20], [500, 55, 100, 20]].forEach(([x, y, width, height]) => context.fillRect(x, y, width, height));
-        context.fillStyle = '#8fd19e';
-        context.fillRect(0, 420, worldCanvas.width, 40);
-        platforms.forEach(platform => {
-            context.fillStyle = '#5b9bd5';
-            context.fillRect(platform.x, platform.y, platform.width, platform.height);
-            context.fillStyle = 'rgba(255,255,255,0.3)';
-            context.fillRect(platform.x, platform.y, platform.width, 5);
-        });
-        hazards.forEach(hazard => {
-            context.fillStyle = '#ef4444';
-            context.beginPath();
-            context.moveTo(hazard.x, hazard.y + hazard.height);
-            context.lineTo(hazard.x + hazard.width / 2, hazard.y);
-            context.lineTo(hazard.x + hazard.width, hazard.y + hazard.height);
-            context.fill();
-        });
-        context.fillStyle = '#ffd34e';
-        context.fillRect(finish.x, finish.y, finish.width, finish.height);
-        context.fillStyle = '#202a3a';
-        context.fillRect(finish.x + 7, finish.y + 10, 22, 5);
-        context.fillStyle = '#2f80ed';
-        context.fillRect(player.x, player.y, player.width, player.height);
-        context.fillStyle = '#f3b183';
-        context.fillRect(player.x + 5, player.y + 5, player.width - 10, 12);
-    }
-
-    function gameLoop() {
-        if (running) movePlayer();
-        draw();
-        animationFrame = requestAnimationFrame(gameLoop);
+        renderer.render(game.scene, game.camera);
     }
 
     worldButtons.forEach(button => button.addEventListener('click', () => openWorld(button.closest('.world-card')?.querySelector('h3')?.textContent || 'Sky Jump')));
     closeWorldModal.addEventListener('click', closeWorld);
     restartWorld.addEventListener('click', resetGame);
-    worldModal.addEventListener('click', event => {
-        if (event.target === worldModal) closeWorld();
-    });
+    worldModal.addEventListener('click', event => { if (event.target === worldModal) closeWorld(); });
     document.addEventListener('keydown', event => {
-        keys[event.key.toLowerCase()] = true;
-        if (worldModal.classList.contains('active') && ['a', 'd', 'arrowleft', 'arrowright', ' ', 'w', 'arrowup'].includes(event.key.toLowerCase())) event.preventDefault();
+        const key = event.key.toLowerCase();
+        keys[key] = true;
+        if (worldModal.classList.contains('active') && ['w', 'a', 's', 'd', ' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) event.preventDefault();
+        if (key === 'arrowup') keys.w = true;
+        if (key === 'arrowdown') keys.s = true;
+        if (key === 'arrowleft') keys.a = true;
+        if (key === 'arrowright') keys.d = true;
     });
     document.addEventListener('keyup', event => {
-        keys[event.key.toLowerCase()] = false;
+        const key = event.key.toLowerCase();
+        keys[key] = false;
+        if (key === 'arrowup') keys.w = false;
+        if (key === 'arrowdown') keys.s = false;
+        if (key === 'arrowleft') keys.a = false;
+        if (key === 'arrowright') keys.d = false;
     });
+    window.addEventListener('resize', resize);
+    resize();
+    renderer.render(game.scene, game.camera);
 }
