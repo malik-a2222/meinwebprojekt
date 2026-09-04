@@ -1,9 +1,9 @@
 const siteLockScreen = document.querySelector('.site-lock-screen');
 const unlockForm = document.getElementById('unlockForm');
 const unlockError = document.getElementById('unlockError');
-const ownerPassword = 'Malik123';
+const ownerPassword = 'malikmilan';
 
-if (localStorage.getItem('blockforgeUnlockedV2') === 'true') {
+if (localStorage.getItem('blockforgeUnlockedV3') === 'true') {
     siteLockScreen?.remove();
 }
 
@@ -11,7 +11,7 @@ unlockForm?.addEventListener('submit', event => {
     event.preventDefault();
     const password = document.getElementById('unlockPassword').value;
     if (password === ownerPassword) {
-        localStorage.setItem('blockforgeUnlockedV2', 'true');
+        localStorage.setItem('blockforgeUnlockedV3', 'true');
         siteLockScreen?.remove();
         return;
     }
