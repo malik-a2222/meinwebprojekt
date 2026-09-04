@@ -1,3 +1,15 @@
+const siteLockScreen = document.querySelector('.site-lock-screen');
+const unlockSiteButton = document.getElementById('unlockSite');
+
+if (localStorage.getItem('blockforgeUnlocked') === 'true') {
+    siteLockScreen?.remove();
+}
+
+unlockSiteButton?.addEventListener('click', () => {
+    localStorage.setItem('blockforgeUnlocked', 'true');
+    siteLockScreen?.remove();
+});
+
 // ===== Login & Registration System =====
 const loginBtn = document.querySelector('.btn-login');
 const registerBtn = document.querySelector('.btn-register');
